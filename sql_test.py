@@ -14,4 +14,4 @@ def create_connection(database):
             conn.close()
 
 if __name__ == '__main__':
-    create_connection('database.db')
+    create_connection('golf.db')

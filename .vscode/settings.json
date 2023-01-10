@@ -3,8 +3,8 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "name": "My Database",
-            "database": "${workspaceFolder:school}/database.db"
+            "name": "sql_golf_project",
+            "database": "${workspaceFolder:SQL_Module}/golf.db"
         }
     ],
     "sqltools.useNodeRuntime": true
