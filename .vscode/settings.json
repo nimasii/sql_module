@@ -3,9 +3,10 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "name": "sql_golf_project",
-            "database": "${workspaceFolder:SQL_Module}/golf.db"
+            "name": "golf_sql",
+            "database": "golf.sqlite"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "python.linting.enabled": false
 }
