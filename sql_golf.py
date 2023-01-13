@@ -1,7 +1,7 @@
 '''
 Imports for the program.
-sqlite for managing the database and creating queries.
-pandas, numpy, and altair to create visualizations for data.
+sqlite for managing the database and creating queries
+pandas, numpy, and altair to create visualizations for data
 Connects to the database and creates a global variable
 '''
 import sqlite3 as sql
@@ -13,9 +13,9 @@ cursor = database.cursor()
 
 
 '''
-Main function for the program.
-Connects to the database and runs a for loop that controls the program.
-Disconnects from the database when finished.
+Main function for the program
+Connects to the database and runs a for loop that controls the program
+Disconnects from the database when finished
 '''
 def main():
     # Establish a connection to the database
@@ -49,8 +49,9 @@ def main():
     database.close()
     exit()
 
+
 '''
-Asks the user which function of the program they would like to use.
+Asks the user which function of the program they would like to use
 Returns the selcted option
 '''
 def get_action():
@@ -63,7 +64,7 @@ def get_action():
 
 
 '''
-Asks the user for information about their round.
+Asks the user for information about their round
 Creates and insert query and executes it to the table with the user input
 '''
 def new_row():
@@ -76,25 +77,97 @@ def new_row():
     fir = float(input('What percentage of fairways in regulation did you hit? (50% = 50) '))
     
     # Creates the insert query
-    insert_query = '''INSERT INTO golf
+    insert_query =  '''INSERT INTO golf
                         (score, par, putts, penalties, gir, fir, over_under)
                         VALUES
                         (?, ?, ?, ?, ?, ?, ?);'''
     
     # Executes the query and applies the user input
-    cursor.execute(insert_query, (score, par, putts, penalties, gir, fir, (score - par)))
+    cursor.execute(insert_query, (score, par, putts, penalties, gir, fir, score - par))
 
 
-# TODO: Show average score, putts, penalties, gir, and fir
-# TODO: Show mins and maxes for stats
+'''
+Gets array of stats from get_stats function
+Prints out all average stats
+Prints out all Min and Max stats
+'''
 def basic_stats():
-    print('2')
+    # Getting the array of stats from the function
+    stats = get_stats()
+
+    # Prints out all of the averages rounded to 2 decimal points
+    print('\nYour Averages:')
+    print(f'Average Score: {round(stats[0][0].loc[0][0], 2)}')
+    print(f'Average Putts: {round(stats[0][1].loc[0][0], 2)}')
+    print(f'Average Penalties: {round(stats[0][2].loc[0][0], 2)}')
+    print(f'Average GIR: {round(stats[0][3].loc[0][0], 2)}%')
+    print(f'Average FIR: {round(stats[0][4].loc[0][0], 2)}%')
+    print(f'Average Over/Under: {round(stats[0][5].loc[0][0], 2)}')
+   
+    # Prints out all of the personal best stats
+    print('\nPersonal Best:')
+    print(f'Lowerst Score: {int(stats[1][0].loc[0][0])}')
+    print(f'Lowerst Putts: {int(stats[1][1].loc[0][0])}')
+    print(f'Highest GIR: {round(stats[1][2].loc[0][0], 2)}')
+    print(f'Highest FIR: {round(stats[1][3].loc[0][0], 2)}')
+    print(f'Lowerst Over/Under: {int(stats[1][4].loc[0][0])}')
 
 
 # TODO: Allow user to create charts to view data
 # TODO: Select chart type, x and y axis and any filters
 def custom_stats():
     print('3')
+
+
+'''
+Runs SQL queries to get all the basic stats needed for the program
+Converts those queries to pandas dataframes
+Returns an array containing all of the basic stats
+'''
+def get_stats():
+    # SQL queries for average stats
+    avg_score =         '''SELECT AVG(score) AS 'Average Score'
+                            FROM golf'''
+    avg_putts =         '''SELECT AVG(putts) AS 'Average Putts'
+                            FROM golf'''
+    avg_penalties =     '''SELECT AVG(penalties) AS 'Average Penalties'
+                            FROM golf'''
+    avg_gir =           '''SELECT AVG(gir) AS 'Average GIR'
+                            FROM golf'''
+    avg_fir =           '''SELECT AVG(fir) AS 'Average FIR'
+                            FROM golf'''
+    avg_over_under =    '''SELECT AVG(over_under) AS 'Average Over/Under'
+                            FROM golf'''
+
+    # SQL queries for Min and Max stats
+    best_score =         '''SELECT MIN(score) AS 'Low Score'
+                            FROM golf'''
+    best_putts =         '''SELECT MIN(putts) AS 'Low Putts'
+                            FROM golf'''
+    best_gir =           '''SELECT MAX(gir) AS 'High GIR'
+                            FROM golf'''
+    best_fir =           '''SELECT MAX(fir) AS 'High FIR'
+                            FROM golf'''
+    best_over_under =    '''SELECT MIN(over_under) AS 'Low Over/Under'
+                            FROM golf'''
+
+    # Converting AVG queries into dataframes
+    avg_score = pd.read_sql_query(avg_score, database)
+    avg_putts = pd.read_sql_query(avg_putts, database)
+    avg_penalties = pd.read_sql_query(avg_penalties, database)
+    avg_gir = pd.read_sql_query(avg_gir, database)
+    avg_fir = pd.read_sql_query(avg_fir, database)
+    avg_over_under = pd.read_sql_query(avg_over_under, database)
+
+    # Converting MIN and MAX queries into dataframes
+    best_score = pd.read_sql_query(best_score, database)
+    best_putts = pd.read_sql_query(best_putts, database)
+    best_gir = pd.read_sql_query(best_gir, database)
+    best_fir = pd.read_sql_query(best_fir, database)
+    best_over_under = pd.read_sql_query(best_over_under, database)
+
+    # Returning array of all statistical dataframes
+    return [[avg_score, avg_putts, avg_penalties, avg_gir, avg_fir, avg_over_under], [best_score, best_putts, best_gir, best_fir, best_over_under]]
 
 
 if __name__ == '__main__':
