@@ -120,7 +120,7 @@ Creates and insert query and executes it to the table with the user input
 '''
 def new_row():
     # Gets user input for their round information
-    score = int(input('What was your score? '))
+    score = int(input('\nWhat was your score? '))
     par = int(input('What was the par on the course? '))
     putts = int(input('How many putts did you take? '))
     penalties = int(input('How many penalty strokes did you take? '))
@@ -171,10 +171,10 @@ Creates the chart, saves it, and opens it in a web browser
 '''
 def create_graph():
     # Gets user input for which stats they would like on each axis
-    print('Which stat would you like on the X axis?')
+    print('\nWhich stat would you like on the X axis?')
     x = input('1) Scores\n2) Putts\n3) Penalties\n4) GIR\n5) FIR\n6) Over/Under\n')
 
-    print('Which stat would you like on the Y axis?')
+    print('\nWhich stat would you like on the Y axis?')
     y = input('1) Scores\n2) Putts\n3) Penalties\n4) GIR\n5) FIR\n6) Over/Under\n')
 
     # Sets the user input equal to the cooresponding column in the data
@@ -212,9 +212,10 @@ def create_graph():
 
     # Creates and saves a scatter plot using the two selected columns
     query = '''SELECT * FROM golf'''
-    chart = alt.Chart(pd.read_sql_query(query, database)).mark_point().encode(
-        x=x,
-        y=y
+    df = pd.read_sql_query(query, database)
+    chart = alt.Chart(df).mark_circle().encode(
+        x=alt.X(x, scale=alt.Scale(domain=[df[x].min(), df[x].max()])),
+        y=alt.Y(y, scale=alt.Scale(domain=[df[y].min(), df[y].max()]))
     )
     chart.save('chart.html')
   
