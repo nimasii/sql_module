@@ -1,1 +1,7 @@
-.vscode, node_modules, geckodriver.log, package-lock.json, package.json, golf.sqlite, chart.png
+.vscode
+node_modules/
+geckodriver.log
+package-lock.json
+package.json
+golf.sqlite
+chart.png
