@@ -6,8 +6,8 @@ Connects to the database and creates a global variable
 '''
 import sqlite3 as sql
 import pandas as pd
-import numpy as np
 import altair as alt
+import webbrowser
 database = sql.connect('golf.sqlite')
 cursor = database.cursor()
 
@@ -30,7 +30,7 @@ def main():
         elif action == '2':
             basic_stats()
         elif action == '3':
-            custom_stats()
+            create_graph()
         else:
             print('ERROR: Invalid input')
         
@@ -57,7 +57,7 @@ Returns the selcted option
 def get_action():
     # Gets the user input of what action they would like to preform
     print('\nWhat would you like to do? (Enter # of desired action):')
-    action = input('1) Add a new round to the database\n2) View some basic stats\n3) Create a query to view custom stats\n')
+    action = input('1) Add a new round to the database\n2) View some basic stats\n3) Create a graph to compare stats\n')
 
     # Returns the value of the selected action
     return action
@@ -164,32 +164,22 @@ def basic_stats():
     print(f'Lowerst Over/Under: {int(stats[1][4].loc[0][0])}')
 
 
-# TODO: Allow user to create charts to view data
-# TODO: Select chart type, x and y axis and any filters
-def custom_stats():
-    print('What would you like to do?')
-    action = input('1) Create a graph\n2) View advanced statistics\n')
-
-    if action == '1':
-        output = create_graph()
-    elif action == '2':
-        output = other_stat()
-    else:
-        print('ERROR: Invalid input')
-        main()
-    
-    print(output)
-
-
+'''
+Lets user pick two columns from the data to compare in a scatter plot
+Sets the rows based on he user input
+Creates the chart, saves it, and opens it in a web browser
+'''
 def create_graph():
+    # Gets user input for which stats they would like on each axis
     print('Which stat would you like on the X axis?')
     x = input('1) Scores\n2) Putts\n3) Penalties\n4) GIR\n5) FIR\n6) Over/Under\n')
 
     print('Which stat would you like on the Y axis?')
     y = input('1) Scores\n2) Putts\n3) Penalties\n4) GIR\n5) FIR\n6) Over/Under\n')
 
+    # Sets the user input equal to the cooresponding column in the data
     if x == '1':
-        x = str('score')
+        x = 'score'
     elif x == '2':
         x = 'putts'
     elif x == '3':
@@ -220,17 +210,17 @@ def create_graph():
         print('ERROR: Invalid Input')
         main()
 
-    print(x)
-    x_query = '''SELECT ? FROM golf'''
-    y_query = '''SELECT ? FROM golf'''
+    # Creates and saves a scatter plot using the two selected columns
+    query = '''SELECT * FROM golf'''
+    chart = alt.Chart(pd.read_sql_query(query, database)).mark_point().encode(
+        x=x,
+        y=y
+    )
+    chart.save('chart.png')
+    
+    # Opens the chart in a web browser
+    webbrowser.open('chart.png')
 
-    x_show = cursor.execute(x_query, x)
-    print(x)
-
-
-
-def other_stat():
-    pass
 
 
 if __name__ == '__main__':
