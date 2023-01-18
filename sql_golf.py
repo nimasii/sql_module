@@ -216,10 +216,10 @@ def create_graph():
         x=x,
         y=y
     )
-    chart.save('chart.png')
-    
-    # Opens the chart in a web browser
-    webbrowser.open('chart.png')
+    chart.save('chart.html')
+  
+    # Opens a new web browser tab with image of created chart
+    webbrowser.open_new_tab('chart.html')
 
 
 
