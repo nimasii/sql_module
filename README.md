@@ -2,13 +2,16 @@
 
 This is a program I built to demonstrate the use of an SQL database in a python environment. This program to track their golf statistics. There are options to input new rounds into the SQL database, view basic statistics, and to create and view a graph to compare any two statistics.
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/CufJi8KNSR0)
 
 # Development Environment
 
 * Visual Studio Code
 * Python 3.10 64-bit
 * Git / Github
+* Altair
+* Pandas
+* Selenium
 
 # Useful Websites
 
